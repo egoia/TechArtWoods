@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://b1cn1nqh3akih"]
+
+[ext_resource type="ArrayMesh" uid="uid://ctcbg873l8y73" path="res://Art/3D/Meshes/mo_grass.res" id="1_ewrq5"]
+[ext_resource type="Texture2D" uid="uid://b24rowb2j64e2" path="res://Art/Textures/grass.png" id="2_on02d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_on02d"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_color = Color(0.31166667, 1, 0.3, 1)
+albedo_texture = ExtResource("2_on02d")
+albedo_texture_msdf = true
+
+[node name="Node3D" type="Node3D" unique_id=316066123]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1690098468]
+mesh = ExtResource("1_ewrq5")
+surface_material_override/0 = SubResource("StandardMaterial3D_on02d")

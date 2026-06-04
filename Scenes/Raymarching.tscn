@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://bf21iwvgg26w4"]
+
+[ext_resource type="Shader" uid="uid://dnh53jqs3fxu5" path="res://Script/Shaders/Raymarching.gdshader" id="1_dpyna"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_dpyna"]
+flip_faces = true
+size = Vector3(5, 5, 5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cgnc6"]
+render_priority = 0
+shader = ExtResource("1_dpyna")
+shader_parameter/sphere_1 = Vector4(0.5, 0.7, 2.425, 1.38)
+shader_parameter/sphere_2 = Vector4(-1.08, 0, 0, 1)
+shader_parameter/blend_tolerance = 0.32
+shader_parameter/MAX_STEPS = 100
+shader_parameter/MAX_DIST = 100.0
+shader_parameter/SURF_DIST = 0.01
+
+[node name="Raymarching" type="Node3D" unique_id=1694808374]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1370727383]
+transform = Transform3D(2.2068062, 0, 0, 0, 1, 0, 0, 0, 4.955414, 0.651783, 0.04356432, -1.9060042)
+mesh = SubResource("BoxMesh_dpyna")
+surface_material_override/0 = SubResource("ShaderMaterial_cgnc6")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="." unique_id=1075236506]
