@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://b58jkr0nxon31"]
+
+[ext_resource type="Shader" uid="uid://cf5kn54ichcyq" path="res://Script/Shaders/Cloud.gdshader" id="1_igqeb"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_d2ojt"]
+flip_faces = true
+size = Vector3(5, 5, 5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yswr7"]
+render_priority = 0
+shader = ExtResource("1_igqeb")
+shader_parameter/MAX_STEPS = 100
+shader_parameter/MAX_DIST = 100.0
+shader_parameter/SURF_DIST = 0.01
+shader_parameter/STEP_LENGTH = 0.1
+shader_parameter/ABSORPTION = 3.465
+shader_parameter/cloud_sphere_shape = Vector4(0, 0, 0, 1.465)
+shader_parameter/color = Color(1, 0.23000002, 0.23000002, 1)
+
+[node name="Node3D" type="Node3D" unique_id=1262907485]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=96538540]
+transform = Transform3D(15.260678, 0, 0, 0, 7.1097555, 0, 0, 0, 13.938614, 0.5584239, 0.004705429, -1.6043665)
+mesh = SubResource("BoxMesh_d2ojt")
+surface_material_override/0 = SubResource("ShaderMaterial_yswr7")
