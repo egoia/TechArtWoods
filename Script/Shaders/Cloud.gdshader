@@ -12,12 +12,12 @@ uniform vec4 cloud_sphere_shape=vec4(0,0,0,1);
 uniform vec3 color : source_color = vec3(1,1,1);
 
 
-vec3 hash33( uvec3 x )
+vec3 hash33( ivec3 x )
 {
-	const uint k = 1103515245U;
-    x = ((x>>8U)^x.yzx)*k;
-    x = ((x>>8U)^x.yzx)*k;
-    x = ((x>>8U)^x.yzx)*k;
+	const int k = 1103515245;
+    x = ((x>>8)^x.yzx)*k;
+    x = ((x>>8)^x.yzx)*k;
+    x = ((x>>8)^x.yzx)*k;
     
     return vec3(x)*(1.0/float(0xffffffffU)) * 2. - 1.0;
 }
@@ -27,21 +27,21 @@ vec3 hash33( uvec3 x )
 float perlin_noise( in vec3 x )
 {
     // grid
-    uvec3 i = uvec3(floor(x));
+    ivec3 i = ivec3(floor(x));
     vec3 f = fract(x);
     
     // quintic interpolant
     vec3 u = f*f*f*(f*(f*6.0-15.0)+10.0);
     
     // gradients
-    vec3 ga = hash33( i+uvec3(0,0,0) );
-    vec3 gb = hash33( i+uvec3(1,0,0) );
-    vec3 gc = hash33( i+uvec3(0,1,0) );
-    vec3 gd = hash33( i+uvec3(1,1,0) );
-    vec3 ge = hash33( i+uvec3(0,0,1) );
-    vec3 gf = hash33( i+uvec3(1,0,1) );
-    vec3 gg = hash33( i+uvec3(0,1,1) );
-    vec3 gh = hash33( i+uvec3(1,1,1) );
+    vec3 ga = hash33( i+ivec3(0,0,0) );
+    vec3 gb = hash33( i+ivec3(1,0,0) );
+    vec3 gc = hash33( i+ivec3(0,1,0) );
+    vec3 gd = hash33( i+ivec3(1,1,0) );
+    vec3 ge = hash33( i+ivec3(0,0,1) );
+    vec3 gf = hash33( i+ivec3(1,0,1) );
+    vec3 gg = hash33( i+ivec3(0,1,1) );
+    vec3 gh = hash33( i+ivec3(1,1,1) );
     
     // projections
     float va = dot( ga, f-vec3(0.0,0.0,0.0) );
@@ -62,6 +62,18 @@ float perlin_noise( in vec3 x )
            u.y*u.z*(va-vc-ve+vg) + 
            u.z*u.x*(va-vb-ve+vf) + 
            u.x*u.y*u.z*(-va+vb+vc-vd+ve-vf-vg+vh);
+}
+
+float fbm(vec3 p){
+	float value = 0.0;
+	float amplitude = 0.5;
+	
+	for(int i=0; i<1; i++){
+		value+=amplitude*perlin_noise(p);
+		p*=2.0;
+		amplitude*=0.5;
+	}
+	return value;
 }
 
 float sphere_SDF(vec3 point, vec3 center, float radius){
@@ -93,7 +105,7 @@ float raymarch(vec3 ray_origin, vec3 ray_dir, float entry_dist){
 	float in_cloud_dist = 0.0;
 	
 	while(get_distance(sample_point)<0.){
-		float density = clamp(perlin_noise(sample_point), 0, 1);
+		float density = clamp(fbm(sample_point*0.2), 0, 1);
 		in_cloud_dist+= STEP_LENGTH * density;
 		sample_point += ray_dir*STEP_LENGTH;
 	}
