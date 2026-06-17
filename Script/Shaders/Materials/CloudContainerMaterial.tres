@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bm87h6dn6gqdw"]
+
+[ext_resource type="Shader" uid="uid://cf5kn54ichcyq" path="res://Script/Shaders/Cloud.gdshader" id="1_mol2r"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_mol2r")

@@ -11,6 +11,8 @@ uniform float ABSORPTION = 0.1;
 uniform vec4 cloud_sphere_shape=vec4(0,0,0,1);
 uniform vec3 color : source_color = vec3(1,1,1);
 
+uniform vec3 light_position;
+
 
 vec3 hash33( ivec3 x )
 {
@@ -27,6 +29,7 @@ vec3 hash33( ivec3 x )
 float perlin_noise( in vec3 x )
 {
     // grid
+	x += vec3(TIME,0,0);
     ivec3 i = ivec3(floor(x));
     vec3 f = fract(x);
     
@@ -100,12 +103,16 @@ float beers_law(float distance, float absorption){
 	return exp(-distance * absorption);
 }
 
-float raymarch(vec3 ray_origin, vec3 ray_dir, float entry_dist){
+float raymarch(vec3 ray_origin, vec3 ray_dir, float entry_dist, bool is_light_sampling){
 	vec3 sample_point = ray_origin + ray_dir*(entry_dist+STEP_LENGTH);
 	float in_cloud_dist = 0.0;
 	
 	while(get_distance(sample_point)<0.){
 		float density = clamp(fbm(sample_point*0.2), 0, 1);
+		float light_sample = 0.;
+		if(is_light_sampling){
+			//vec3 light_dir = LIGHT
+		}
 		in_cloud_dist+= STEP_LENGTH * density;
 		sample_point += ray_dir*STEP_LENGTH;
 	}
@@ -119,7 +126,7 @@ void fragment(){
 	
 	float entry_dist = sphere_tracing(ray_origin, ray_direction);
 	if(entry_dist<MAX_DIST){
-		float in_cloud_distance = raymarch(ray_origin, ray_direction, entry_dist);
+		float in_cloud_distance = raymarch(ray_origin, ray_direction, entry_dist, false);
 		ALPHA = 1.0 - beers_law(in_cloud_distance, ABSORPTION);
 		ALBEDO = color;
 	}
