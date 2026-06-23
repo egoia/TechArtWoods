@@ -5,3 +5,13 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_mol2r")
+shader_parameter/MAX_STEPS = 100
+shader_parameter/MAX_DIST = 100.0
+shader_parameter/SURF_DIST = 0.01
+shader_parameter/STEP_LENGTH = 0.2
+shader_parameter/LIGHT_STEP_LENGTH = 0.21
+shader_parameter/ABSORPTION = 0.22
+shader_parameter/LIGHT_ABSORPTION = 0.1
+shader_parameter/cloud_sphere_shape = Vector4(0, 0, 0, 18.9)
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/light_direction = Vector3(0, -1.15, 0)

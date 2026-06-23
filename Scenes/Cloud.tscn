@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b58jkr0nxon31"]
 
 [ext_resource type="Material" uid="uid://bm87h6dn6gqdw" path="res://Script/Shaders/Materials/CloudContainerMaterial.tres" id="1_d2ojt"]
-[ext_resource type="Script" uid="uid://b62q7d7uxrhxr" path="res://Scenes/cloud_container.gd" id="2_yswr7"]
+[ext_resource type="Script" uid="uid://b62q7d7uxrhxr" path="res://Scenes/cloud_container.gd" id="2_d2ojt"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_d2ojt"]
 flip_faces = true
@@ -10,12 +10,12 @@ size = Vector3(5, 5, 5)
 [node name="Node3D" type="Node3D" unique_id=1262907485]
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1971818748]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+transform = Transform3D(0.2846782, -0.82928014, 0.48088747, -0.95847654, -0.23746704, 0.15789807, -0.016747117, -0.50586975, -0.8624473, -24.297188, -2.704932, 0)
 shadow_enabled = true
 
 [node name="Cloud container" type="MeshInstance3D" parent="." unique_id=96538540 node_paths=PackedStringArray("light")]
-transform = Transform3D(15.260678, 0, 0, 0, 7.1097555, 0, 0, 0, 13.938614, 1.167532, 7.2983055, -2.4260256)
+transform = Transform3D(15.260678, 0, 0, 0, 7.1097555, 0, 0, 0, 13.938614, 1.0100288, 4.9129677, -2.1310847)
 mesh = SubResource("BoxMesh_d2ojt")
 surface_material_override/0 = ExtResource("1_d2ojt")
-script = ExtResource("2_yswr7")
+script = ExtResource("2_d2ojt")
 light = NodePath("../Sun")

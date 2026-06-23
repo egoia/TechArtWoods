@@ -6,12 +6,14 @@ uniform float MAX_DIST = 100.0;
 uniform float SURF_DIST = 0.01;
 
 uniform float STEP_LENGTH = 0.1;
+uniform float LIGHT_STEP_LENGTH = 0.1;
 uniform float ABSORPTION = 0.1;
+uniform float LIGHT_ABSORPTION = 0.1;
 
 uniform vec4 cloud_sphere_shape=vec4(0,0,0,1);
 uniform vec3 color : source_color = vec3(1,1,1);
 
-uniform vec3 light_position;
+uniform vec3 light_direction = vec3(1,0,0);
 
 
 vec3 hash33( ivec3 x )
@@ -103,20 +105,23 @@ float beers_law(float distance, float absorption){
 	return exp(-distance * absorption);
 }
 
-float raymarch(vec3 ray_origin, vec3 ray_dir, float entry_dist, bool is_light_sampling){
+vec2 raymarch(vec3 ray_origin, vec3 ray_dir, float entry_dist){
 	vec3 sample_point = ray_origin + ray_dir*(entry_dist+STEP_LENGTH);
 	float in_cloud_dist = 0.0;
+	float light_transmitted = 0.0;
 	
 	while(get_distance(sample_point)<0.){
-		float density = clamp(fbm(sample_point*0.2), 0, 1);
-		float light_sample = 0.;
-		if(is_light_sampling){
-			//vec3 light_dir = LIGHT
+		vec3 light_sample_point = sample_point;
+		for(int i=0; i<MAX_STEPS && get_distance(light_sample_point)<0.; i++){
+			float density = clamp(fbm(light_sample_point*0.2), 0, 1);
+			light_transmitted += LIGHT_STEP_LENGTH * density;
+			light_sample_point += -light_direction*LIGHT_STEP_LENGTH;
 		}
+		float density = clamp(fbm(sample_point*0.2), 0, 1);
 		in_cloud_dist+= STEP_LENGTH * density;
 		sample_point += ray_dir*STEP_LENGTH;
 	}
-	return in_cloud_dist;
+	return vec2(in_cloud_dist, light_transmitted);
 }
 
 void fragment(){
@@ -126,9 +131,9 @@ void fragment(){
 	
 	float entry_dist = sphere_tracing(ray_origin, ray_direction);
 	if(entry_dist<MAX_DIST){
-		float in_cloud_distance = raymarch(ray_origin, ray_direction, entry_dist, false);
-		ALPHA = 1.0 - beers_law(in_cloud_distance, ABSORPTION);
-		ALBEDO = color;
+		vec2 sample = raymarch(ray_origin, ray_direction, entry_dist);
+		ALPHA = 1.0 - beers_law(sample.x, ABSORPTION);
+		ALBEDO = color * vec3(beers_law(sample.y, LIGHT_ABSORPTION));
 	}
 	else ALPHA = 0.0;
 	
