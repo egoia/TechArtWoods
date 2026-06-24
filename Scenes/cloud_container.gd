@@ -5,9 +5,10 @@ extends MeshInstance3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	set_instance_shader_parameter("light_direction", -light.transform.basis.z)
+	set_instance_shader_parameter("light_direction", -light.global_transform.basis.z)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	set_instance_shader_parameter("light_direction", -light.transform.basis.z)
+	print(-light.global_transform.basis.z)
+	set_instance_shader_parameter("light_direction", -light.global_transform.basis.z)
