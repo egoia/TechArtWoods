@@ -113,11 +113,12 @@ vec2 raymarch(vec3 ray_origin, vec3 ray_dir, float entry_dist){
 	while(get_distance(sample_point)<0.){
 		vec3 light_sample_point = sample_point;
 		float light_transmitted = 0.0;
+		//check si densité = 0 ne pas lightmazrch
 		for(int i=0; i<MAX_STEPS && get_distance(light_sample_point)<0.; i++){
 			float density = clamp(fbm(light_sample_point*0.2), 0, 1);
 			light_transmitted += LIGHT_STEP_LENGTH * density;
 			light_sample_point += -light_direction*LIGHT_STEP_LENGTH;
-			if(light_transmitted>=LIGHT_STEP_LENGTH)break;
+			if(light_transmitted>=1.)break;
 		}
 		float density = clamp(fbm(sample_point*0.2), 0, 1);
 		
@@ -125,7 +126,7 @@ vec2 raymarch(vec3 ray_origin, vec3 ray_dir, float entry_dist){
 		sample_point += ray_dir*STEP_LENGTH;
 		light_transmittance += light_transmitted;
 		
-		if(light_transmitted>=LIGHT_STEP_LENGTH)break;
+		if(light_transmitted>=1.)break;
 	}
 	return vec2(in_cloud_dist, light_transmittance);
 }

@@ -10,13 +10,13 @@ size = Vector3(5, 5, 5)
 [node name="Node3D" type="Node3D" unique_id=1262907485]
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1971818748]
-transform = Transform3D(-0.46311763, 0.17234156, 0.8693786, -0.3334046, -0.9427383, 0.009281103, 0.8211979, -0.28555682, 0.49405774, -28.041779, -2.704932, -1.1343842)
+transform = Transform3D(0.39790908, -0.12955517, 0.90823114, -0.33506966, -0.9421116, 0.01241076, 0.8540473, -0.30925912, -0.41828462, -28.041779, -2.704932, -1.1343842)
 shadow_enabled = true
 
 [node name="Cloud container" type="MeshInstance3D" parent="." unique_id=96538540 node_paths=PackedStringArray("light")]
 transform = Transform3D(15.260677, 7.708412e-19, 0.0032623478, 0.00018158655, 7.100561, -0.7086287, -0.00356716, 0.3614546, 13.9205885, 1.0100288, 4.9129677, -2.1310847)
 material_override = ExtResource("1_d2ojt")
-instance_shader_parameters/light_direction = Vector3(-0.86937964, -0.009280132, -0.49405763)
+instance_shader_parameters/light_direction = Vector3(-0.9082312, -0.012410778, 0.41828477)
 mesh = SubResource("BoxMesh_d2ojt")
 script = ExtResource("2_d2ojt")
 light = NodePath("../Sun")
