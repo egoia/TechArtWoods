@@ -105,30 +105,36 @@ float beers_law(float distance, float absorption){
 	return exp(-distance * absorption);
 }
 
+float lightmarch(vec3 ray_origin){
+	vec3 ray_dir = -light_direction;
+	vec3 light_step = ray_dir * LIGHT_STEP_LENGTH;
+	vec3 sample_point = ray_origin + light_step;
+	
+	float in_cloud_dist = 0.;
+	for(int i=0; i<MAX_STEPS && get_distance(sample_point)<0.; i++){
+		in_cloud_dist+= clamp(fbm(sample_point*0.1), 0, 1) * LIGHT_STEP_LENGTH;
+		sample_point+=light_step;
+	}	
+	float transmittance = beers_law(in_cloud_dist, LIGHT_ABSORPTION);
+	return transmittance;
+}
+
 vec2 raymarch(vec3 ray_origin, vec3 ray_dir, float entry_dist){
 	vec3 sample_point = ray_origin + ray_dir*(entry_dist+STEP_LENGTH);
-	float in_cloud_dist = 0.0;
-	float light_transmittance = 0.0;
+	float light_energy = 0.;
+	float transmittance = 1.0;
 	
 	while(get_distance(sample_point)<0.){
 		vec3 light_sample_point = sample_point;
-		float light_transmitted = 0.0;
-		//check si densité = 0 ne pas lightmazrch
-		for(int i=0; i<MAX_STEPS && get_distance(light_sample_point)<0.; i++){
-			float density = clamp(fbm(light_sample_point*0.2), 0, 1);
-			light_transmitted += LIGHT_STEP_LENGTH * density;
-			light_sample_point += -light_direction*LIGHT_STEP_LENGTH;
-			if(light_transmitted>=1.)break;
-		}
-		float density = clamp(fbm(sample_point*0.2), 0, 1);
-		
-		in_cloud_dist+= STEP_LENGTH * density;
-		sample_point += ray_dir*STEP_LENGTH;
-		light_transmittance += light_transmitted;
-		
-		if(light_transmitted>=1.)break;
+		float density = clamp(fbm(sample_point*0.1), 0, 1);
+		if(density>0.){
+			float light_transmittance = lightmarch(sample_point);
+			light_energy+= density*STEP_LENGTH*transmittance*light_transmittance;
+		}	transmittance *= beers_law(density*STEP_LENGTH, ABSORPTION);
+		if(transmittance<0.01)break;
+		sample_point+=ray_dir*STEP_LENGTH;
 	}
-	return vec2(in_cloud_dist, light_transmittance);
+	return vec2(transmittance, light_energy);
 }
 
 void fragment(){
@@ -139,8 +145,8 @@ void fragment(){
 	float entry_dist = sphere_tracing(ray_origin, ray_direction);
 	if(entry_dist<MAX_DIST){
 		vec2 sample = raymarch(ray_origin, ray_direction, entry_dist);
-		ALPHA = 1.0 - beers_law(sample.x, ABSORPTION);
-		ALBEDO = color * beers_law(sample.y, LIGHT_ABSORPTION);
+		ALPHA = 1.0 - sample.x;
+		ALBEDO = color * sample.y;
 	}
 	else ALPHA = 0.0;
 	
